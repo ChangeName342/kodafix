@@ -4,10 +4,10 @@ export const NAV_LINKS: NavLink[] = [
   { label: "Proyectos", href: "#proyectos" },
   { label: "Servicios", href: "#servicios" },
   { label: "Equipo",    href: "#equipo" },
-  { label: "Contacto",      href: "#contacto" },
+  { label: "Contacto",      href: "/contacto" },
   { label: "Iniciar Sesión",  href: "/login" },
 ];
- 
+
 export const MARQUEE_ITEMS: MarqueeItem[] = [
   { txt: "Desarrollo Web",          color: "#a855f7" },
   { txt: "Apps Mobile",             color: "#06b6d4" },

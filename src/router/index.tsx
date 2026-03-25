@@ -3,6 +3,7 @@ import { AuthProvider, useAuthContext } from "../context/AuthContext";
 import App       from "../App";
 import Login     from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
+import Contact from "../pages/Contact";
 
 // Protege rutas autenticadas
 function PrivateRoute({ children }: { children: React.ReactNode }) {
@@ -40,6 +41,7 @@ function AppRoutes() {
         </PrivateRoute>
       } />
       <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="/contacto" element={<Contact />} />
     </Routes>
   );
 }

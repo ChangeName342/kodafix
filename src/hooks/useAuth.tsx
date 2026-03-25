@@ -19,7 +19,7 @@ export function useAuth() {
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (firebaseUser: User | null) => {
-      console.log("onAuthStateChanged fired:", firebaseUser?.email); // debug temporal
+      console.log("onAuthStateChanged fired:", firebaseUser?.email); 
       if (!firebaseUser) {
         setUser(null);
         setLoading(false);
@@ -28,7 +28,7 @@ export function useAuth() {
 
       const snap = await getDoc(doc(db, "users", firebaseUser.uid));
       const data = snap.data();
-      console.log("snap exists:", snap.exists(), "data:", data); // debug temporal
+      console.log("snap exists:", snap.exists(), "data:", data); 
 
       setUser({
         uid:         firebaseUser.uid,

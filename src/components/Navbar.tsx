@@ -7,6 +7,16 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
+  const handleNav = (href: string) => {
+    if (href.startsWith("#")) {
+      const el = document.getElementById(href.slice(1));
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    } else {
+      navigate(href);
+    }
+    setMenuOpen(false);
+  };
+
   return (
     <>
       <nav
@@ -25,7 +35,7 @@ export default function Navbar() {
           {NAV_LINKS.map((l) => (
             <li key={l.label}>
               <button
-                onClick={() => navigate(l.href)}
+                onClick={() => handleNav(l.href)}
                 className="nav-link block px-3 py-2 rounded-lg text-[13px] font-medium"
                 style={{ background: "none", border: "none", cursor: "pointer", color: "rgba(241,240,255,0.55)", fontFamily: "'Outfit', sans-serif" }}
               >
@@ -51,6 +61,7 @@ export default function Navbar() {
             (e.currentTarget as HTMLButtonElement).style.transform = "";
             (e.currentTarget as HTMLButtonElement).style.boxShadow = "";
           }}
+          onClick={() => handleNav("#contacto")}
         >
           Hablemos
         </button>
@@ -76,7 +87,7 @@ export default function Navbar() {
           {NAV_LINKS.map((l) => (
             <button
               key={l.label}
-              onClick={() => { navigate(l.href); setMenuOpen(false); }}
+              onClick={() => handleNav(l.href)}
               className="nav-link px-3 py-3 rounded-lg text-[14px] font-medium text-left w-full"
               style={{ background: "none", border: "none", cursor: "pointer", color: "rgba(241,240,255,0.65)", fontFamily: "'Outfit', sans-serif" }}
             >
@@ -90,6 +101,7 @@ export default function Navbar() {
               padding: "12px", borderRadius: 9, fontSize: 14,
               fontFamily: "'Outfit', sans-serif",
             }}
+            onClick={() => handleNav("#contacto")}
           >
             Hablemos
           </button>

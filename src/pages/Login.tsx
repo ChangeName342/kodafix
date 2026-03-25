@@ -95,19 +95,7 @@ export default function Login() {
 
         {/* Logo */}
         <div className="fade-up flex flex-col items-center mb-8">
-          <div className="flex items-center justify-center rounded-[12px] border mb-4" style={{ width: 52, height: 52, background: "linear-gradient(135deg,#1a0a2e,#2d1557)", borderColor: "rgba(168,85,247,0.35)" }}>
-            <svg width="28" height="28" viewBox="0 0 22 22" fill="none">
-              <path d="M4 3 Q2 3 2 5.5 L2 8 Q2 10 0.5 10 Q2 10 2 12.5 L2 15 Q2 17 4 17" stroke="#a855f7" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-              <path d="M18 3 Q20 3 20 5.5 L20 8 Q20 10 21.5 10 Q20 10 20 12.5 L20 15 Q20 17 18 17" stroke="#a855f7" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-              <line x1="7" y1="4" x2="7" y2="16" stroke="#c084fc" strokeWidth="1.8" strokeLinecap="round" />
-              <line x1="7" y1="10" x2="15" y2="4" stroke="#c084fc" strokeWidth="1.8" strokeLinecap="round" />
-              <line x1="7" y1="10" x2="15" y2="16" stroke="#c084fc" strokeWidth="1.8" strokeLinecap="round" />
-              <circle cx="7" cy="4" r="1.2" fill="#e9d5ff" />
-              <circle cx="15" cy="4" r="1.2" fill="#e9d5ff" />
-              <circle cx="7" cy="10" r="1.2" fill="#e9d5ff" />
-              <circle cx="15" cy="16" r="1.2" fill="#e9d5ff" />
-            </svg>
-          </div>
+            <img src="/logo.png" alt="KodaFix" style={{ width: 52, height: 52, objectFit: "contain", marginBottom: 16 }} />
           <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 20, fontWeight: 700, color: "#a855f7", letterSpacing: -0.5 }}>
             Koda<span style={{ color: "#f1f0ff" }}>Fix</span>
           </span>
