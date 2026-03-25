@@ -1,59 +1,32 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginUser, sendResetEmail, validateEmail, validatePassword } from "../services/authService";
+import { loginUser } from "../services/authService";
 import { useAuthContext } from "../context/AuthContext";
+import LoginForm from "../components/login/LoginForm";
+import ResetPasswordModal from "../components/login/ResetPasswordModal";
 
 export default function Login() {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuthContext();
 
-  const [email, setEmail]           = useState("");
-  const [password, setPassword]     = useState("");
-  const [showPass, setShowPass]     = useState(false);
-  const [error, setError]           = useState("");
   const [formLoading, setFormLoading] = useState(false);
+  const [error, setError]             = useState("");
+  const [showReset, setShowReset]     = useState(false);
+  const [resetEmail, setResetEmail]   = useState("");
 
-  const [showReset, setShowReset]       = useState(false);
-  const [resetEmail, setResetEmail]     = useState("");
-  const [resetMsg, setResetMsg]         = useState("");
-  const [resetError, setResetError]     = useState("");
-  const [resetLoading, setResetLoading] = useState(false);
-
-  const [emailErr, setEmailErr]       = useState("");
-  const [passwordErr, setPasswordErr] = useState("");
-
-  // Navega cuando el contexto confirme el usuario
+  // Redirige cuando el contexto confirme el usuario
   useEffect(() => {
     if (!authLoading && user) {
       navigate("/dashboard", { replace: true });
     }
   }, [user, authLoading, navigate]);
 
-  const handleEmailChange = (val: string) => {
-    setEmail(val);
-    setEmailErr(validateEmail(val));
-  };
-
-  const handlePasswordChange = (val: string) => {
-    setPassword(val);
-    if (val.length > 0) setPasswordErr(validatePassword(val));
-    else setPasswordErr("");
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (email: string, password: string) => {
     setError("");
-
-    const eErr = validateEmail(email);
-    const pErr = password ? "" : "La contraseña es requerida.";
-    setEmailErr(eErr);
-    setPasswordErr(pErr);
-    if (eErr || pErr) return;
-
     setFormLoading(true);
     try {
       await loginUser(email, password);
-      // No navegamos aquí — el useEffect lo hace cuando el contexto esté listo
+      // El useEffect detecta el cambio de user y navega
     } catch (err: unknown) {
       const msg = (err as Error).message;
       if (msg.includes("user-not-found") || msg.includes("wrong-password") || msg.includes("invalid-credential"))
@@ -67,31 +40,9 @@ export default function Login() {
     }
   };
 
-  useEffect(() => {
-  console.log("authLoading:", authLoading, "user:", user);
-}, [authLoading, user]);
-
-  const handleReset = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setResetError("");
-    setResetMsg("");
-
-    const err = validateEmail(resetEmail);
-    if (err) { setResetError(err); return; }
-
-    setResetLoading(true);
-    try {
-      await sendResetEmail(resetEmail);
-      setResetMsg("Correo enviado. Revisa tu bandeja de entrada.");
-    } catch (err: unknown) {
-      const msg = (err as Error).message;
-      if (msg.includes("user-not-found"))
-        setResetError("No existe una cuenta con ese correo.");
-      else
-        setResetError(msg);
-    } finally {
-      setResetLoading(false);
-    }
+  const handleForgotPassword = (email: string) => {
+    setResetEmail(email);
+    setShowReset(true);
   };
 
   return (
@@ -131,10 +82,7 @@ export default function Login() {
         }
         .btn-primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(124,58,237,0.45); }
         .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
-        .btn-ghost {
-          background: none; border: none; cursor: pointer; font-family: 'Outfit', sans-serif;
-          transition: color .2s;
-        }
+        .btn-ghost { background: none; border: none; cursor: pointer; font-family: 'Outfit', sans-serif; transition: color .2s; }
         .overlay { animation: fadeIn .2s ease; }
       `}</style>
 
@@ -166,85 +114,24 @@ export default function Login() {
           <span style={{ fontSize: 13, color: "rgba(241,240,255,0.35)", marginTop: 4 }}>Panel de administración</span>
         </div>
 
-        {/* Card login */}
+        {/* Card */}
         <div className="fade-up-2 rounded-2xl p-8" style={{ background: "#0e0e1a", border: "1px solid rgba(255,255,255,0.06)" }}>
           <h1 style={{ fontSize: 22, fontWeight: 800, color: "#f1f0ff", marginBottom: 6, letterSpacing: -0.5 }}>Iniciar sesión</h1>
           <p style={{ fontSize: 13, color: "rgba(241,240,255,0.4)", marginBottom: 28 }}>Acceso exclusivo para administradores</p>
 
-          <form onSubmit={handleSubmit} noValidate>
-
-            {/* Email */}
-            <div style={{ marginBottom: 16 }}>
-              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "rgba(241,240,255,0.5)", marginBottom: 8, letterSpacing: "0.05em", textTransform: "uppercase" }}>
-                Correo electrónico
-              </label>
-              <input
-                type="email"
-                className={`input-field${emailErr ? " error" : ""}`}
-                placeholder="admin@kodafix.com"
-                value={email}
-                onChange={(e) => handleEmailChange(e.target.value)}
-                autoComplete="email"
-              />
-              {emailErr && <span className="field-error">{emailErr}</span>}
-            </div>
-
-            {/* Contraseña */}
-            <div style={{ marginBottom: 8 }}>
-              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "rgba(241,240,255,0.5)", marginBottom: 8, letterSpacing: "0.05em", textTransform: "uppercase" }}>
-                Contraseña
-              </label>
-              <div className="input-wrap">
-                <input
-                  type={showPass ? "text" : "password"}
-                  className={`input-field${passwordErr ? " error" : ""}`}
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => handlePasswordChange(e.target.value)}
-                  style={{ paddingRight: 44 }}
-                  autoComplete="current-password"
-                />
-                <button type="button" onClick={() => setShowPass(!showPass)}
-                  style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "rgba(241,240,255,0.3)", transition: "color .2s", padding: 4 }}
-                  onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.color = "#a855f7")}
-                  onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.color = "rgba(241,240,255,0.3)")}
-                >
-                  {showPass
-                    ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-                    : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                  }
-                </button>
-              </div>
-              {passwordErr && <span className="field-error">{passwordErr}</span>}
-            </div>
-
-            {/* ¿Olvidaste tu contraseña? */}
-            <div style={{ textAlign: "right", marginBottom: 24 }}>
-              <button type="button" className="btn-ghost" onClick={() => { setShowReset(true); setResetEmail(email); }}
-                style={{ fontSize: 12, color: "rgba(241,240,255,0.35)" }}
-                onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.color = "#a855f7")}
-                onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.color = "rgba(241,240,255,0.35)")}
-              >
-                ¿Olvidaste tu contraseña?
-              </button>
-            </div>
-
-            {/* Error general */}
-            {error && (
-              <div style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 8, padding: "10px 14px", marginBottom: 16, fontSize: 13, color: "#f87171" }}>
-                {error}
-              </div>
-            )}
-
-            <button type="submit" className="btn-primary" disabled={formLoading}>
-              {formLoading ? "Verificando..." : "Entrar al panel"}
-            </button>
-          </form>
+          <LoginForm
+            onSubmit={handleSubmit}
+            onForgotPassword={handleForgotPassword}
+            loading={formLoading}
+            error={error}
+          />
         </div>
 
         {/* Volver */}
         <div className="fade-up-3 text-center mt-6">
-          <button className="btn-ghost" onClick={() => navigate("/")}
+          <button
+            className="btn-ghost"
+            onClick={() => navigate("/")}
             style={{ fontSize: 13, color: "rgba(241,240,255,0.3)" }}
             onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.color = "#a855f7")}
             onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.color = "rgba(241,240,255,0.3)")}
@@ -254,67 +141,12 @@ export default function Login() {
         </div>
       </div>
 
-      {/* ── Modal reset contraseña ── */}
+      {/* Modal reset */}
       {showReset && (
-        <div
-          className="overlay"
-          style={{ position: "fixed", inset: 0, zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center", padding: 16, background: "rgba(0,0,0,0.7)", backdropFilter: "blur(4px)" }}
-          onClick={(e) => { if (e.target === e.currentTarget) { setShowReset(false); setResetMsg(""); setResetError(""); } }}
-        >
-          <div style={{ background: "#0e0e1a", border: "1px solid rgba(168,85,247,0.2)", borderRadius: 20, padding: 32, width: "100%", maxWidth: 400 }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
-              <h2 style={{ fontSize: 18, fontWeight: 800, color: "#f1f0ff", letterSpacing: -0.3 }}>Restablecer contraseña</h2>
-              <button onClick={() => { setShowReset(false); setResetMsg(""); setResetError(""); }}
-                style={{ background: "none", border: "none", cursor: "pointer", color: "rgba(241,240,255,0.3)", transition: "color .2s" }}
-                onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.color = "#f1f0ff")}
-                onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.color = "rgba(241,240,255,0.3)")}
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
-              </button>
-            </div>
-
-            <p style={{ fontSize: 13, color: "rgba(241,240,255,0.45)", marginBottom: 24, lineHeight: 1.6 }}>
-              Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.
-            </p>
-
-            {!resetMsg ? (
-              <form onSubmit={handleReset} noValidate>
-                <div style={{ marginBottom: 20 }}>
-                  <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "rgba(241,240,255,0.5)", marginBottom: 8, letterSpacing: "0.05em", textTransform: "uppercase" }}>
-                    Correo electrónico
-                  </label>
-                  <input
-                    type="email"
-                    className={`input-field${resetError ? " error" : ""}`}
-                    placeholder="admin@kodafix.com"
-                    value={resetEmail}
-                    onChange={(e) => { setResetEmail(e.target.value); setResetError(""); }}
-                    autoComplete="email"
-                  />
-                  {resetError && <span className="field-error">{resetError}</span>}
-                </div>
-                <button type="submit" className="btn-primary" disabled={resetLoading}>
-                  {resetLoading ? "Enviando..." : "Enviar correo"}
-                </button>
-              </form>
-            ) : (
-              <div style={{ textAlign: "center" }}>
-                <div style={{ width: 48, height: 48, borderRadius: "50%", background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.2)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px" }}>
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round">
-                    <polyline points="20 6 9 17 4 12"/>
-                  </svg>
-                </div>
-                <p style={{ fontSize: 14, color: "#34d399", fontWeight: 600, marginBottom: 8 }}>Correo enviado</p>
-                <p style={{ fontSize: 13, color: "rgba(241,240,255,0.45)", marginBottom: 24 }}>{resetMsg}</p>
-                <button className="btn-primary" onClick={() => { setShowReset(false); setResetMsg(""); }}>
-                  Entendido
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
+        <ResetPasswordModal
+          initialEmail={resetEmail}
+          onClose={() => setShowReset(false)}
+        />
       )}
     </div>
   );

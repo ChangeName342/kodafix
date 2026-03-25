@@ -7,7 +7,7 @@ export type MarqueeItem = {
   txt: string;
   color: string;
 };
- 
+
 export type Service = {
   title: string;
   desc: string;
