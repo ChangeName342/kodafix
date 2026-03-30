@@ -3,20 +3,20 @@ import type { NavLink, MarqueeItem, Service, Stat, TeamMember } from "../types";
 export const NAV_LINKS: NavLink[] = [
   { label: "Proyectos", href: "#proyectos" },
   { label: "Servicios", href: "#servicios" },
-  { label: "Equipo",    href: "#equipo" },
-  { label: "Contacto",      href: "/contacto" },
-  { label: "Iniciar Sesión",  href: "/login" },
+  { label: "Planes",    href: "#planes" },
+  { label: "Equipo",    href: "/equipo" },
+  { label: "Contacto",  href: "/contacto" },
 ];
 
 export const MARQUEE_ITEMS: MarqueeItem[] = [
-  { txt: "Desarrollo Web",          color: "#a855f7" },
-  { txt: "Apps Mobile",             color: "#06b6d4" },
-  { txt: "Inteligencia Artificial", color: "#ec4899" },
-  { txt: "Datos & Analítica",       color: "#f97316" },
-  { txt: "UI/UX Design",            color: "#10b981" },
-  { txt: "Cloud & DevOps",          color: "#eab308" },
-  { txt: "Automatización",          color: "#a855f7" },
-  { txt: "Consultoría Tech",        color: "#06b6d4" },
+  { txt: "Desarrollo Web",          color: "#a855f7" }, // morado
+  { txt: "Apps Mobile",             color: "#06b6d4" }, // cyan
+  { txt: "Inteligencia Artificial", color: "#ec4899" }, // rosa
+  { txt: "Datos & Analítica",       color: "#f97316" }, // naranja
+  { txt: "UI/UX Design",            color: "#10b981" }, // verde
+  { txt: "Cloud & DevOps",          color: "#eab308" }, // amarillo
+  { txt: "Automatización",          color: "#a855f7" }, // morado
+  { txt: "Consultoría Tech",        color: "#06b6d4" }, // cyan
 ];
  
 export const STATS: Stat[] = [
