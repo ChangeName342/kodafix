@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 import { logoutUser } from "../services/authService";
 import SectionUsuarios from "../components/dashboard/SectionUsuarios";
+import SectionPerfil from "../components/dashboard/SectionPerfil";
+
 
 // ── TIPOS ─────────────────────────────────────────────────────────────────────
 
@@ -213,73 +215,15 @@ function SectionInicio({ displayName, isFounder }: { displayName: string; isFoun
   );
 }
 
-// ── SECCIÓN PERFIL ────────────────────────────────────────────────────────────
-
-function SectionPerfil({ displayName, email }: { displayName: string; email: string }) {
-  return (
-    <div>
-      <h1 style={{ fontSize: 22, fontWeight: 800, color: "#f1f0ff", letterSpacing: -0.5, marginBottom: 6 }}>Mi perfil</h1>
-      <p style={{ fontSize: 14, color: "rgba(241,240,255,0.4)", marginBottom: 32 }}>Personaliza tu información pública.</p>
-
-      <div style={{ background: "#0e0e1a", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 16, padding: 28, maxWidth: 560 }}>
-        {/* Avatar */}
-        <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 28, paddingBottom: 24, borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-          <div style={{ width: 72, height: 72, borderRadius: "50%", background: "linear-gradient(135deg,#3b0764,#7c3aed)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, fontWeight: 800, color: "#ede9fe", flexShrink: 0 }}>
-            {displayName.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase()}
-          </div>
-          <div>
-            <div style={{ fontSize: 17, fontWeight: 700, color: "#f1f0ff", marginBottom: 4 }}>{displayName}</div>
-            <div style={{ fontSize: 13, color: "rgba(241,240,255,0.4)" }}>{email}</div>
-          </div>
-          <button style={{ marginLeft: "auto", background: "rgba(168,85,247,0.1)", border: "1px solid rgba(168,85,247,0.2)", color: "#a855f7", padding: "7px 14px", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "'Outfit', sans-serif", opacity: 0.6 }} disabled>
-            Cambiar foto
-          </button>
-        </div>
-
-        {/* Campos */}
-        {[
-          { label: "Nombre completo", value: displayName, type: "text" },
-          { label: "Correo electrónico", value: email, type: "email" },
-          { label: "Cargo / Rol público", value: "", placeholder: "Ej: Full Stack Developer", type: "text" },
-          { label: "Biografía", value: "", placeholder: "Cuéntanos sobre ti...", type: "textarea" },
-          { label: "LinkedIn", value: "", placeholder: "https://linkedin.com/in/...", type: "url" },
-          { label: "GitHub", value: "", placeholder: "https://github.com/...", type: "url" },
-        ].map((f) => (
-          <div key={f.label} style={{ marginBottom: 18 }}>
-            <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: "rgba(241,240,255,0.4)", marginBottom: 7, letterSpacing: "0.06em", textTransform: "uppercase" }}>{f.label}</label>
-            {f.type === "textarea" ? (
-              <textarea
-                defaultValue={f.value} placeholder={f.placeholder}
-                rows={3} disabled
-                style={{ width: "100%", padding: "10px 14px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10, color: "#f1f0ff", fontSize: 14, fontFamily: "'Outfit', sans-serif", outline: "none", resize: "vertical", opacity: 0.6 }}
-              />
-            ) : (
-              <input
-                type={f.type} defaultValue={f.value} placeholder={f.placeholder}
-                disabled
-                style={{ width: "100%", padding: "10px 14px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10, color: "#f1f0ff", fontSize: 14, fontFamily: "'Outfit', sans-serif", outline: "none", opacity: 0.6 }}
-              />
-            )}
-          </div>
-        ))}
-
-        <button style={{ width: "100%", background: "rgba(168,85,247,0.2)", border: "1px solid rgba(168,85,247,0.3)", color: "#a855f7", padding: "11px", borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: "not-allowed", fontFamily: "'Outfit', sans-serif", marginTop: 8, opacity: 0.6 }} disabled>
-          Guardar cambios — próximamente
-        </button>
-      </div>
-    </div>
-  );
-}
-
 // ── RENDER DE SECCIÓN ─────────────────────────────────────────────────────────
 
-function renderSection(section: Section, isFounder: boolean, displayName: string, email: string) {
+function renderSection(section: Section, isFounder: boolean, displayName: string) {
   switch (section) {
     case "inicio":
       return <SectionInicio displayName={displayName} isFounder={isFounder} />;
 
     case "perfil":
-      return <SectionPerfil displayName={displayName} email={email} />;
+      return <SectionPerfil />;
 
     case "usuarios":
       return <SectionUsuarios />;
@@ -365,7 +309,7 @@ export default function Dashboard() {
       />
 
       <main style={{ flex: 1, overflowY: "auto", padding: "36px 40px", maxWidth: "calc(100vw - 240px)" }}>
-        {renderSection(section, isFounder, displayName, email)}
+        {renderSection(section, isFounder, displayName)}
       </main>
     </div>
   );

@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth, browserSessionPersistence, setPersistence } from "firebase/auth";
+import { getStorage } from "firebase/storage";
  
 const firebaseConfig = {
   apiKey:            import.meta.env.VITE_FIREBASE_API_KEY,
@@ -11,9 +12,10 @@ const firebaseConfig = {
   appId:             import.meta.env.VITE_FIREBASE_APP_ID,
 };
  
-const app  = initializeApp(firebaseConfig);
-export const db   = getFirestore(app);
-export const auth = getAuth(app);
+const app = initializeApp(firebaseConfig);
  
-// Sesión solo dura mientras el tab está abierto — al cerrar o recargar, pide credenciales
+export const db      = getFirestore(app);
+export const auth    = getAuth(app);
+export const storage = getStorage(app);
+ 
 setPersistence(auth, browserSessionPersistence);
