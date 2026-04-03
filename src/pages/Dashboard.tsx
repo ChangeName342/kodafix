@@ -4,7 +4,7 @@ import { useAuthContext } from "../context/AuthContext";
 import { logoutUser } from "../services/authService";
 import SectionUsuarios from "../components/dashboard/SectionUsuarios";
 import SectionPerfil from "../components/dashboard/SectionPerfil";
-
+import SectionProyectosPersonales from "../components/dashboard/SectionProyectosPersonales";
 
 // ── TIPOS ─────────────────────────────────────────────────────────────────────
 
@@ -238,7 +238,7 @@ function renderSection(section: Section, isFounder: boolean, displayName: string
       return <Placeholder title="Proyectos de clientes" description="Sube y administra los proyectos solicitados por clientes. La info llegará al correo y deberás ingresarla manualmente." buttonLabel="Ver proyectos" color="#f97316" />;
 
     case "proyectos-personales":
-      return <Placeholder title="Proyectos personales" description="Agrega los proyectos que deseas mostrar en tu portafolio público: nombre, descripción, tecnologías y enlace." buttonLabel="Mis proyectos" color="#ec4899" />;
+      return <SectionProyectosPersonales />;
 
     case "certificados":
       return <Placeholder title="Certificados" description="Agrega tus certificaciones profesionales: nombre, institución, fecha y enlace de verificación." buttonLabel="Mis certificados" color="#eab308" />;
