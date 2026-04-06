@@ -1,10 +1,13 @@
 import { STATS } from "../data";
+import { useTheme } from "../context/ThemeContext";
 
 export default function Stats() {
+  const { c } = useTheme();
+
   return (
     <div
       className="relative grid grid-cols-2 md:grid-cols-4"
-      style={{ zIndex: 5, borderTop: "1px solid rgba(255,255,255,0.04)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}
+      style={{ zIndex: 5, borderTop: `1px solid ${c.border}`, borderBottom: `1px solid ${c.border}` }}
     >
       {STATS.map((s, i) => (
         <div
@@ -12,8 +15,8 @@ export default function Stats() {
           className="text-center"
           style={{
             padding: "32px 20px",
-            borderRight: i % 2 === 0 ? "1px solid rgba(255,255,255,0.04)" : undefined,
-            borderBottom: i < 2 ? "1px solid rgba(255,255,255,0.04)" : undefined,
+            borderRight: i % 2 === 0 ? `1px solid ${c.border}` : undefined,
+            borderBottom: i < 2 ? `1px solid ${c.border}` : undefined,
           }}
         >
           <span
@@ -27,7 +30,7 @@ export default function Stats() {
           >
             {s.num}
           </span>
-          <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(241,240,255,0.25)" }}>
+          <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: c.textLow }}>
             {s.label}
           </span>
         </div>

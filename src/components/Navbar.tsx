@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import LogoIcon from "./LogoIcon";
 import { NAV_LINKS } from "../data";
+import { useTheme } from "../context/ThemeContext";
 
 const ANIMATION_CSS = `
   .logo-wrap {
@@ -60,6 +61,7 @@ export default function Navbar() {
   const lastScrollY = useRef(0);
   const ticking = useRef(false);
   const navigate = useNavigate();
+  const { c, isDark } = useTheme();
 
   // Animación logo inicial
   useEffect(() => {
@@ -121,26 +123,14 @@ export default function Navbar() {
         className="relative flex items-center justify-between px-6 md:px-12 py-5"
         style={{
           zIndex: 100,
-          borderBottom: "1px solid rgba(168,85,247,0.12)",
+          borderBottom: `1px solid ${isDark ? "rgba(168,85,247,0.12)" : "rgba(168,85,247,0.18)"}`,
           opacity: navOpacity,
           pointerEvents: navOpacity < 0.05 ? "none" : "auto",
-          transition: "opacity 0.12s linear",
+          transition: "opacity 0.12s linear, background 0.3s, border-color 0.3s",
           position: "sticky",
           top: 0,
-
-          // 🔥 CLAVE: NO romper fondo
-          background: "transparent",
-          backdropFilter: "none",
-
-          // 💡 OPCIONAL (descomenta si quieres glass al hacer scroll)
-          /*
-          background: navOpacity < 0.95 
-            ? "transparent" 
-            : "rgba(7,7,16,0.6)",
-          backdropFilter: navOpacity < 0.95 
-            ? "none" 
-            : "blur(10px)",
-          */
+          background: isDark ? "transparent" : c.navBg,
+          backdropFilter: isDark ? "none" : "blur(12px)",
         }}
       >
         {/* Logo */}
@@ -180,7 +170,7 @@ export default function Navbar() {
                   background: "none",
                   border: "none",
                   cursor: "pointer",
-                  color: "rgba(241,240,255,0.55)",
+                  color: c.textMid,
                   fontFamily: "'Outfit', sans-serif",
                 }}
               >
@@ -231,8 +221,8 @@ export default function Navbar() {
         <div
           className="mobile-menu md:hidden flex flex-col px-6 py-4 gap-1"
           style={{
-            background: "#0e0e1a",
-            borderBottom: "1px solid rgba(168,85,247,0.12)",
+            background: isDark ? "#0e0e1a" : c.navBg,
+            borderBottom: `1px solid ${isDark ? "rgba(168,85,247,0.12)" : "rgba(168,85,247,0.18)"}`,
           }}
         >
           {publicLinks.map((l) => (
@@ -241,7 +231,7 @@ export default function Navbar() {
               onClick={() => handleNav(l.href)}
               className="nav-link px-3 py-3 rounded-lg text-[14px] text-left"
               style={{
-                color: "rgba(241,240,255,0.65)",
+                color: c.textMid,
                 fontFamily: "'Outfit', sans-serif",
               }}
             >

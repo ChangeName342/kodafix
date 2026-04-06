@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useTheme } from "../context/ThemeContext";
 
 const SCROLL_CSS = `
   /* ── Mouse (desktop) ── */
@@ -91,8 +92,8 @@ function FingerIcon({ color }: { color: string }) {
 // ── Componente principal ──────────────────────────────────────────────────────
 export default function Hero() {
   const navigate = useNavigate();
+  const { c } = useTheme();
 
-  // Detecta si el dispositivo tiene pantalla táctil
   const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   useEffect(() => {
@@ -135,7 +136,7 @@ export default function Hero() {
           fontSize: "clamp(40px, 8vw, 72px)",
           fontWeight: 900, lineHeight: 1.05,
           letterSpacing: "clamp(-1px, -0.04em, -3px)",
-          color: "#f1f0ff", marginBottom: 10,
+          color: c.textHi, marginBottom: 10,
           fontFamily: "'Outfit', sans-serif",
         }}
       >
@@ -160,7 +161,7 @@ export default function Hero() {
       </h1>
 
       {/* Subtítulo */}
-      <p style={{ fontSize: "clamp(15px, 2vw, 19px)", color: "rgba(241,240,255,0.55)", maxWidth: 560, margin: "24px auto 40px", lineHeight: 1.65 }}>
+      <p style={{ fontSize: "clamp(15px, 2vw, 19px)", color: c.textMid, maxWidth: 560, margin: "24px auto 40px", lineHeight: 1.65 }}>
         Web, mobile, IA, automatización, diseño. Si tienes un problema, nosotros construimos la solución.
       </p>
 
@@ -178,9 +179,9 @@ export default function Hero() {
         <button
           onClick={() => { const el = document.getElementById("equipo"); if (el) el.scrollIntoView({ behavior: "smooth" }); }}
           className="cursor-pointer font-medium"
-          style={{ background: "transparent", color: "rgba(241,240,255,0.6)", border: "1px solid rgba(255,255,255,0.1)", padding: "13px 24px", borderRadius: 12, fontSize: "clamp(14px, 2vw, 16px)", fontFamily: "'Outfit', sans-serif", transition: "all .25s" }}
+          style={{ background: "transparent", color: c.textMid, border: `1px solid ${c.border}`, padding: "13px 24px", borderRadius: 12, fontSize: "clamp(14px, 2vw, 16px)", fontFamily: "'Outfit', sans-serif", transition: "all .25s" }}
           onMouseEnter={(e) => { const b = e.currentTarget as HTMLButtonElement; b.style.borderColor = "rgba(168,85,247,0.4)"; b.style.color = "#a855f7"; }}
-          onMouseLeave={(e) => { const b = e.currentTarget as HTMLButtonElement; b.style.borderColor = "rgba(255,255,255,0.1)"; b.style.color = "rgba(241,240,255,0.6)"; }}
+          onMouseLeave={(e) => { const b = e.currentTarget as HTMLButtonElement; b.style.borderColor = c.border; b.style.color = c.textMid; }}
         >
           Conoce al equipo →
         </button>

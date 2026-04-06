@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(firebase --version)",
+      "Bash(firebase projects:list)",
+      "Bash(firebase login:*)",
+      "Bash(firebase functions:secrets:set FLOW_API_KEY)",
+      "Bash(firebase functions:secrets:set FLOW_SECRET_KEY)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(firebase deploy:*)",
+      "Bash(firebase functions:delete flowConfirm --region us-central1 --force)",
+      "Bash(firebase functions:delete flowCreate --region us-central1 --force)",
+      "Bash(gcloud --version)",
+      "Bash(firebase functions:delete createFlowPayment flowConfirmation checkPaymentStatus --region us-central1 --force)",
+      "Bash(firebase functions:log --only createFlowPayment)",
+      "Bash(firebase functions:log)",
+      "Bash(firebase functions:log --limit 50)"
+    ]
+  }
+}

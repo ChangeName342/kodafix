@@ -1,7 +1,6 @@
 import type { NavLink, MarqueeItem, Service, Stat, TeamMember } from "../types";
  
 export const NAV_LINKS: NavLink[] = [
-  { label: "Proyectos", href: "#proyectos" },
   { label: "Servicios", href: "#servicios" },
   { label: "Planes",    href: "#planes" },
   { label: "Equipo",    href: "/equipo" },

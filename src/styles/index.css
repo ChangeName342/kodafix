@@ -1,1 +1,64 @@
 @import "tailwindcss";
+
+/* ── Transición suave en cambio de tema ─────────────────────────────────────── */
+*, *::before, *::after {
+  transition-property: background-color, border-color, color;
+  transition-duration: 0.25s;
+  transition-timing-function: ease;
+}
+
+/* ── Overrides modo claro para la landing ───────────────────────────────────── */
+[data-theme="light"] body {
+  background: #f5f4ff;
+  color: #0f0e1f;
+}
+
+/* Textos blancos que deben oscurecerse */
+[data-theme="light"] .text-white {
+  color: #0f0e1f !important;
+}
+
+[data-theme="light"] .text-gray-300,
+[data-theme="light"] .text-gray-400 {
+  color: rgba(15,14,31,0.6) !important;
+}
+
+/* Cards de servicios, stats, team */
+[data-theme="light"] .service-card {
+  background: #ffffff !important;
+  border-color: rgba(168,85,247,0.15) !important;
+}
+
+/* Marquee */
+[data-theme="light"] .marquee-track span {
+  color: rgba(15,14,31,0.5) !important;
+}
+
+/* Footer */
+[data-theme="light"] footer,
+[data-theme="light"] [class*="footer"] {
+  background: #eeedf8 !important;
+  border-color: rgba(15,14,31,0.08) !important;
+}
+
+/* Headings y párrafos generales en la landing */
+[data-theme="light"] h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3,
+[data-theme="light"] h4 {
+  color: #0f0e1f;
+}
+
+[data-theme="light"] p {
+  color: rgba(15,14,31,0.65);
+}
+
+/* Partículas — opacidad reducida en claro */
+[data-theme="light"] canvas {
+  opacity: 0.3;
+}
+
+/* Aurora — reducir intensidad */
+[data-theme="light"] [aria-hidden="true"] div {
+  opacity: 0.35;
+}

@@ -7,12 +7,14 @@ import Stats           from "./components/Stats";
 import Footer          from "./components/Footer";
 import WhatsAppButton  from "./components/WhatsAppButton";
 import PricingPlans    from "./components/PricingPlans";
+import { useTheme }   from "./context/ThemeContext";
 
 export default function App() {
+  const { c } = useTheme();
   return (
     <div
-      className="min-h-screen text-white overflow-x-hidden"
-      style={{ background: "#070710", fontFamily: "'Outfit', sans-serif" }}
+      className="min-h-screen overflow-x-hidden"
+      style={{ background: c.bg, color: c.textHi, fontFamily: "'Outfit', sans-serif", transition: "background 0.3s, color 0.3s" }}
     >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap');

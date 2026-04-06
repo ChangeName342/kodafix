@@ -1,4 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useTheme } from "../context/ThemeContext";
 
 interface Entregable { icono: string; titulo: string; descripcion: string; }
 interface Fase { numero: number; nombre: string; duracion: string; descripcion: string; }
@@ -148,23 +150,172 @@ export default function PlanDetalle() {
     );
   }
 
-  const TEXT_HI  = "#f1f0ff";
-  const TEXT_MID = "rgba(241,240,255,0.55)";
-  const TEXT_LOW = "rgba(241,240,255,0.28)";
-  const BG       = "#070710";
-  const BG_CARD  = "#0d0d1a";
+  const { c } = useTheme();
+  const TEXT_HI  = c.textHi;
+  const TEXT_MID = c.textMid;
+  const TEXT_LOW = c.textLow;
+  const BG       = c.bg;
+  const BG_CARD  = c.bgCard;
+
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupVisible, setPopupVisible] = useState(false);
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setShowPopup(true), 300);
+    const t2 = setTimeout(() => setPopupVisible(true), 350);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, []);
+
+  function closePopup() {
+    setPopupVisible(false);
+    setTimeout(() => setShowPopup(false), 400);
+  }
 
   return (
-    <div style={{ minHeight: "100vh", background: BG, fontFamily: "'Outfit',sans-serif", color: TEXT_HI }}>
+    <div style={{ minHeight: "100vh", background: BG, fontFamily: "'Outfit',sans-serif", color: TEXT_HI, transition: "background 0.3s, color 0.3s" }}>
+
+      {/* Popup de bienvenida */}
+      {showPopup && (
+        <div
+          onClick={closePopup}
+          style={{
+            position: "fixed", inset: 0, zIndex: 200,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            padding: "24px",
+            background: popupVisible ? "rgba(0,0,0,0.72)" : "rgba(0,0,0,0)",
+            backdropFilter: popupVisible ? "blur(6px)" : "blur(0px)",
+            transition: "background 0.4s ease, backdrop-filter 0.4s ease",
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              maxWidth: 520, width: "100%",
+              background: `linear-gradient(160deg,${c.bgFeat},${c.bgCard})`,
+              border: `1px solid ${plan.color}40`,
+              borderRadius: 24,
+              padding: "44px 40px 36px",
+              boxShadow: `0 0 0 1px ${plan.color}15, 0 40px 100px rgba(0,0,0,0.7), 0 0 80px ${plan.color}15`,
+              textAlign: "center",
+              opacity: popupVisible ? 1 : 0,
+              transform: popupVisible ? "translateY(0) scale(1)" : "translateY(32px) scale(0.96)",
+              transition: "opacity 0.45s cubic-bezier(0.16,1,0.3,1), transform 0.45s cubic-bezier(0.16,1,0.3,1)",
+              position: "relative", overflow: "hidden",
+            }}
+          >
+            {/* Glow de fondo */}
+            <div style={{ position: "absolute", top: -60, left: "50%", transform: "translateX(-50%)", width: 320, height: 200, background: `radial-gradient(ellipse,${plan.color}20,transparent 70%)`, pointerEvents: "none" }} />
+
+            {/* Título */}
+            <h2 style={{
+              fontFamily: "'Outfit',sans-serif",
+              fontSize: "clamp(21px,3.5vw,27px)", fontWeight: 900,
+              letterSpacing: -0.8, lineHeight: 1.25,
+              color: TEXT_HI, margin: "0 0 14px",
+            }}>
+              ¡Buena elección explorar el{" "}
+              <span style={{ background: `linear-gradient(135deg,${plan.colorOscuro},${plan.color})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+                plan {plan.nombre}
+              </span>
+              !
+            </h2>
+
+            {/* Mensaje principal */}
+            <p style={{
+              fontFamily: "'Outfit',sans-serif",
+              fontSize: 15, color: TEXT_MID, lineHeight: 1.75,
+              margin: "0 0 16px",
+            }}>
+              Queremos que tomes la mejor decisión para tu negocio. Por eso, en esta página detallamos <strong style={{ color: TEXT_HI }}>exactamente qué obtienes</strong>, cuándo lo recibes y qué pasa después.
+            </p>
+
+            {/* Píldoras de confianza */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", marginBottom: 24 }}>
+              {[
+                { icon: "✅", text: "Sin letra chica" },
+                { icon: "🔒", text: "Pago seguro" },
+                { icon: "💬", text: "Soporte real" },
+                { icon: "📋", text: "Todo detallado" },
+              ].map(({ icon, text }) => (
+                <span key={text} style={{
+                  fontFamily: "'Outfit',sans-serif", fontSize: 12, fontWeight: 600,
+                  padding: "5px 12px", borderRadius: 100,
+                  background: `${plan.color}10`, border: `1px solid ${plan.color}25`,
+                  color: plan.color, display: "flex", alignItems: "center", gap: 5,
+                }}>
+                  {icon} {text}
+                </span>
+              ))}
+            </div>
+
+            {/* Botones */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <button
+                onClick={closePopup}
+                style={{
+                  width: "100%", padding: "15px 20px", borderRadius: 12, border: "none",
+                  background: `linear-gradient(135deg,${plan.colorOscuro},${plan.color})`,
+                  color: "#fff", fontFamily: "'Outfit',sans-serif", fontSize: 15, fontWeight: 700,
+                  cursor: "pointer", boxShadow: `0 10px 32px ${plan.color}40`,
+                  display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                }}
+              >
+                Ver qué incluye este plan
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+
+              <a
+                href={`https://wa.me/56953584105?text=${encodeURIComponent(`Hola Koda Fix 👋 Estoy viendo el plan ${plan.nombre} y me gustaría que me orienten antes de decidir.`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={closePopup}
+                style={{
+                  width: "100%", padding: "13px 20px", borderRadius: 12,
+                  background: "rgba(37,211,102,0.07)", border: "1px solid rgba(37,211,102,0.28)",
+                  color: "#25d366", fontFamily: "'Outfit',sans-serif", fontSize: 14, fontWeight: 600,
+                  cursor: "pointer", textDecoration: "none",
+                  display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                  boxSizing: "border-box",
+                }}
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                </svg>
+                Prefiero hablar con alguien primero
+              </a>
+            </div>
+
+            {/* Micro-texto de cierre */}
+            <p style={{ marginTop: 18, fontSize: 11, color: TEXT_LOW, fontFamily: "'Outfit',sans-serif", lineHeight: 1.6 }}>
+              Sin presión. Estamos aquí para ayudarte a elegir bien.
+            </p>
+
+            {/* Cerrar con X */}
+            <button
+              onClick={closePopup}
+              style={{
+                position: "absolute", top: 16, right: 16,
+                background: c.bgFeat, border: `1px solid ${c.border}`,
+                borderRadius: 8, width: 32, height: 32, cursor: "pointer",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                color: TEXT_LOW, fontSize: 16, lineHeight: 1,
+              }}
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
+
       <div style={{ position: "fixed", top: -200, left: "50%", transform: "translateX(-50%)", width: 700, height: 500, zIndex: 0, pointerEvents: "none", background: `radial-gradient(ellipse,${plan.color}18 0%,transparent 70%)` }} />
 
       {/* Navbar mínimo */}
-      <nav style={{ position: "sticky", top: 0, zIndex: 100, borderBottom: "1px solid rgba(168,85,247,0.12)", background: "rgba(7,7,16,0.85)", backdropFilter: "blur(12px)", padding: "16px 32px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      <nav style={{ position: "sticky", top: 0, zIndex: 100, borderBottom: `1px solid ${c.border}`, background: c.navBg, backdropFilter: "blur(12px)", padding: "16px 32px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <button
           onClick={() => navigate(-1)}
-          style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: 8, fontFamily: "'Outfit',sans-serif", fontSize: 14, color: "rgba(241,240,255,0.5)", transition: "color .2s" }}
+          style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: 8, fontFamily: "'Outfit',sans-serif", fontSize: 14, color: TEXT_MID, transition: "color .2s" }}
           onMouseEnter={(e) => (e.currentTarget as HTMLButtonElement).style.color = "#a855f7"}
-          onMouseLeave={(e) => (e.currentTarget as HTMLButtonElement).style.color = "rgba(241,240,255,0.5)"}
+          onMouseLeave={(e) => (e.currentTarget as HTMLButtonElement).style.color = TEXT_MID}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
           Volver
@@ -173,10 +324,10 @@ export default function PlanDetalle() {
           <span style={{ color: "#a855f7" }}>Koda </span><span style={{ color: TEXT_HI }}>Fix</span>
         </span>
         <button
-          onClick={() => navigate("/contacto")}
+          onClick={() => navigate(`/contratar/${plan.id}`)}
           style={{ background: `linear-gradient(135deg,${plan.colorOscuro},${plan.color})`, border: "none", color: "#fff", padding: "9px 20px", borderRadius: 9, fontFamily: "'Outfit',sans-serif", fontSize: 14, fontWeight: 700, cursor: "pointer" }}
         >
-          Me interesa
+          Contratar ahora
         </button>
       </nav>
 
@@ -193,9 +344,9 @@ export default function PlanDetalle() {
               <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: plan.color, marginBottom: 6 }}>Pago único · Implementación</p>
               <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: "clamp(26px,4vw,34px)", fontWeight: 700, color: TEXT_HI, letterSpacing: -1, margin: 0 }}>{clp(plan.implementacion)}</p>
             </div>
-            <div style={{ background: BG_CARD, border: "1px solid rgba(255,255,255,0.06)", borderRadius: 14, padding: "20px 28px" }}>
+            <div style={{ background: BG_CARD, border: `1px solid ${c.border}`, borderRadius: 14, padding: "20px 28px" }}>
               <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: TEXT_LOW, marginBottom: 6 }}>Mensualidad</p>
-              <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: "clamp(22px,3vw,28px)", fontWeight: 700, color: "rgba(241,240,255,0.8)", letterSpacing: -1, margin: 0 }}>
+              <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: "clamp(22px,3vw,28px)", fontWeight: 700, color: TEXT_HI, letterSpacing: -1, margin: 0 }}>
                 {clp(plan.mensualidad)} <span style={{ fontSize: 14, color: TEXT_LOW, fontWeight: 400 }}>/ mes</span>
               </p>
             </div>
@@ -211,7 +362,7 @@ export default function PlanDetalle() {
                 <div style={{ width: 28, height: 28, flexShrink: 0, borderRadius: 8, background: `${plan.color}18`, border: `1px solid ${plan.color}30`, display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={plan.color} strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
                 </div>
-                <p style={{ fontSize: 14, color: "rgba(241,240,255,0.72)", lineHeight: 1.55, margin: 0 }}>{item}</p>
+                <p style={{ fontSize: 14, color: TEXT_MID, lineHeight: 1.55, margin: 0 }}>{item}</p>
               </div>
             ))}
           </div>
@@ -223,7 +374,7 @@ export default function PlanDetalle() {
           <p style={{ fontSize: 14, color: TEXT_LOW, marginBottom: 28 }}>Todo lo que incluye la implementación, explicado en detalle.</p>
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {plan.entregables.map((e, i) => (
-              <div key={i} style={{ background: BG_CARD, border: "1px solid rgba(255,255,255,0.055)", borderRadius: 14, padding: "22px 24px", display: "flex", gap: 18, alignItems: "flex-start" }}>
+              <div key={i} style={{ background: BG_CARD, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px", display: "flex", gap: 18, alignItems: "flex-start" }}>
                 <div style={{ fontSize: 28, flexShrink: 0, width: 48, height: 48, display: "flex", alignItems: "center", justifyContent: "center", background: `${plan.color}12`, borderRadius: 12, border: `1px solid ${plan.color}25` }}>{e.icono}</div>
                 <div>
                   <h3 style={{ fontSize: 16, fontWeight: 700, color: TEXT_HI, marginBottom: 6, letterSpacing: -0.3 }}>{e.titulo}</h3>
@@ -268,7 +419,7 @@ export default function PlanDetalle() {
               {plan.soporteMensual.map((item, i) => (
                 <li key={i} style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={plan.color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 2 }}><polyline points="20 6 9 17 4 12"/></svg>
-                  <span style={{ fontSize: 14, color: "rgba(241,240,255,0.72)", lineHeight: 1.5 }}>{item}</span>
+                  <span style={{ fontSize: 14, color: TEXT_MID, lineHeight: 1.5 }}>{item}</span>
                 </li>
               ))}
             </ul>
@@ -289,27 +440,82 @@ export default function PlanDetalle() {
         </div>
 
         {/* CTA final */}
-        <div style={{ background: `linear-gradient(135deg,${plan.color}12,${plan.colorOscuro}08)`, border: `1px solid ${plan.color}30`, borderRadius: 20, padding: "40px 36px", textAlign: "center" }}>
-          <h2 style={{ fontSize: "clamp(22px,4vw,32px)", fontWeight: 900, letterSpacing: -1, marginBottom: 12 }}>¿Listo para comenzar?</h2>
-          <p style={{ fontSize: 15, color: TEXT_MID, maxWidth: 480, margin: "0 auto 28px", lineHeight: 1.65 }}>
-            Escríbenos y coordinamos una reunión sin costo para confirmar que este plan es el ideal para ti.
+        <div style={{ background: `linear-gradient(135deg,${plan.color}12,${plan.colorOscuro}08)`, border: `1px solid ${plan.color}30`, borderRadius: 20, padding: "48px 40px", textAlign: "center" }}>
+          {/* Ícono decorativo */}
+          <div style={{ width: 64, height: 64, borderRadius: 18, background: `${plan.color}18`, border: `1px solid ${plan.color}35`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", color: plan.color }}>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+
+          <h2 style={{ fontSize: "clamp(22px,4vw,34px)", fontWeight: 900, letterSpacing: -1, marginBottom: 12 }}>¿Listo para comenzar?</h2>
+          <p style={{ fontSize: 15, color: TEXT_MID, maxWidth: 460, margin: "0 auto 36px", lineHeight: 1.7 }}>
+            Contrata ahora mismo con pago seguro, o habla con un ejecutivo si tienes dudas antes de decidir.
           </p>
-          <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+
+          {/* Botones */}
+          <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
+            {/* Contratar ahora */}
             <button
-              onClick={() => navigate("/contacto")}
-              style={{ background: `linear-gradient(135deg,${plan.colorOscuro},${plan.color})`, border: "none", color: "#fff", fontWeight: 700, padding: "14px 32px", borderRadius: 12, fontFamily: "'Outfit',sans-serif", fontSize: 15, cursor: "pointer", boxShadow: `0 8px 28px ${plan.color}35` }}
+              onClick={() => navigate(`/contratar/${plan.id}`)}
+              style={{
+                background: `linear-gradient(135deg,${plan.colorOscuro},${plan.color})`,
+                border: "none", color: "#fff", fontWeight: 700,
+                padding: "15px 36px", borderRadius: 12,
+                fontFamily: "'Outfit',sans-serif", fontSize: 15,
+                cursor: "pointer", boxShadow: `0 10px 32px ${plan.color}40`,
+                display: "flex", alignItems: "center", gap: 9,
+                transition: "transform 0.18s, box-shadow 0.18s",
+              }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-2px)"; (e.currentTarget as HTMLButtonElement).style.boxShadow = `0 16px 40px ${plan.color}55`; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = "translateY(0)"; (e.currentTarget as HTMLButtonElement).style.boxShadow = `0 10px 32px ${plan.color}40`; }}
             >
-              Quiero este plan →
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/>
+              </svg>
+              Contratar ahora
             </button>
 
-            {/* ← Navega a /#planes: ScrollToTop detecta el hash y hace scroll a #planes */}
-            <button
-              onClick={() => navigate("/#planes")}
-              style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.12)", color: "rgba(241,240,255,0.6)", padding: "14px 24px", borderRadius: 12, fontFamily: "'Outfit',sans-serif", fontSize: 15, fontWeight: 600, cursor: "pointer" }}
+            {/* Hablar con un ejecutivo */}
+            <a
+              href={`https://wa.me/56953584105?text=${encodeURIComponent(`Hola Koda Fix, tengo dudas sobre el plan ${plan.nombre} y me gustaría hablar con un ejecutivo 👋`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                background: "rgba(37,211,102,0.08)",
+                border: "1px solid rgba(37,211,102,0.35)",
+                color: "#25d366", fontWeight: 700,
+                padding: "15px 32px", borderRadius: 12,
+                fontFamily: "'Outfit',sans-serif", fontSize: 15,
+                cursor: "pointer", textDecoration: "none",
+                display: "flex", alignItems: "center", gap: 9,
+                transition: "background 0.18s, border-color 0.18s, transform 0.18s",
+              }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(37,211,102,0.14)"; (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(37,211,102,0.6)"; (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(-2px)"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(37,211,102,0.08)"; (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(37,211,102,0.35)"; (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(0)"; }}
             >
-              Ver otros planes
-            </button>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+              </svg>
+              Hablar con un ejecutivo
+            </a>
           </div>
+
+          {/* Nota de seguridad + T&C */}
+          <p style={{ marginTop: 24, fontSize: 12, color: TEXT_LOW, display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Pago seguro procesado por Flow · Sin letra chica
+          </p>
+          <p style={{ marginTop: 10, fontSize: 11, color: TEXT_LOW, lineHeight: 1.65, fontFamily: "'Outfit',sans-serif" }}>
+            Al contratar un plan de Koda Fix aceptas nuestros{" "}
+            <a href="/terminos" target="_blank" rel="noopener noreferrer" style={{ color: plan.color, textDecoration: "none", borderBottom: `1px solid ${plan.color}40`, paddingBottom: 1 }}>
+              Términos y Condiciones
+            </a>
+            {" "}y la{" "}
+            <a href="/terminos#privacidad" target="_blank" rel="noopener noreferrer" style={{ color: plan.color, textDecoration: "none", borderBottom: `1px solid ${plan.color}40`, paddingBottom: 1 }}>
+              Política de Privacidad
+            </a>.
+          </p>
         </div>
 
       </div>

@@ -1,12 +1,17 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { AuthProvider, useAuthContext } from "../context/AuthContext";
+import { ThemeProvider } from "../context/ThemeContext";
+import ThemeToggle from "../components/ThemeToggle";
 import App         from "../App";
 import Login       from "../pages/Login";
 import Dashboard   from "../pages/Dashboard";
 import Contact     from "../pages/Contact";
 import PlanDetalle from "../pages/PlanDetalle";
 import Equipo      from "../pages/Equipo";
+import Contratar      from "../pages/Contratar";
+import PagoResultado  from "../pages/PagoResultado";
+import Terminos       from "../pages/Terminos";
 
 function ScrollToTop() {
   const { pathname, hash } = useLocation();
@@ -58,11 +63,15 @@ function AppRoutes() {
   return (
     <>
       <ScrollToTop />
+      <ThemeToggle />
       <Routes>
         <Route path="/"               element={<App />} />
         <Route path="/contacto"       element={<Contact />} />
         <Route path="/equipo"         element={<Equipo />} />
-        <Route path="/planes/:planId" element={<PlanDetalle />} />
+        <Route path="/planes/:planId"    element={<PlanDetalle />} />
+        <Route path="/contratar/:planId" element={<Contratar />} />
+        <Route path="/pago/resultado"    element={<PagoResultado />} />
+        <Route path="/terminos"          element={<Terminos />} />
         <Route path="/login" element={
           <PublicRoute><Login /></PublicRoute>
         } />
@@ -78,9 +87,11 @@ function AppRoutes() {
 export default function Router() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <AppRoutes />
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

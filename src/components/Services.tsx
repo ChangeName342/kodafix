@@ -1,3 +1,5 @@
+import { useTheme } from "../context/ThemeContext";
+
 const SERVICES = [
   {
     title: "Desarrollo Web",
@@ -44,16 +46,18 @@ const SERVICES = [
 ];
 
 export default function Services() {
+  const { c } = useTheme();
+
   return (
     <section id="servicios" className="relative px-6 md:px-12 py-16 md:py-20 mx-auto" style={{ zIndex: 5, maxWidth: 1100 }}>
       <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "#a855f7", marginBottom: 12 }}>
         Lo que hacemos
       </p>
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4" style={{ marginBottom: 40 }}>
-        <h2 style={{ fontSize: "clamp(32px, 5vw, 44px)", fontWeight: 800, letterSpacing: -1.5, color: "#f1f0ff", lineHeight: 1.1 }}>
+        <h2 style={{ fontSize: "clamp(32px, 5vw, 44px)", fontWeight: 800, letterSpacing: -1.5, color: c.textHi, lineHeight: 1.1 }}>
           Soluciones para<br />cada desafío
         </h2>
-        <p style={{ fontSize: 16, color: "rgba(241,240,255,0.55)", maxWidth: 500, lineHeight: 1.6 }}>
+        <p style={{ fontSize: 16, color: c.textMid, maxWidth: 500, lineHeight: 1.6 }}>
           Desde apps web hasta modelos de IA, pasando por infraestructura y diseño de producto.
         </p>
       </div>
@@ -63,14 +67,14 @@ export default function Services() {
           <div
             key={s.title}
             className="service-card rounded-2xl p-6 relative overflow-hidden cursor-pointer"
-            style={{ background: "#0e0e1a", border: "1px solid rgba(255,255,255,0.05)" }}
+            style={{ background: c.bgCard, border: `1px solid ${c.border}` }}
           >
             <div className="absolute inset-0 rounded-2xl pointer-events-none" style={{ background: `linear-gradient(135deg,${s.bg},transparent)` }} />
             <div className="flex items-center justify-center rounded-xl mb-5" style={{ width: 44, height: 44, background: s.iconBg, position: "relative" }}>
               {s.icon}
             </div>
-            <h3 style={{ fontSize: 16, fontWeight: 700, color: "#f1f0ff", marginBottom: 8, letterSpacing: -0.3 }}>{s.title}</h3>
-            <p style={{ fontSize: 13, color: "rgba(241,240,255,0.55)", lineHeight: 1.65 }}>{s.desc}</p>
+            <h3 style={{ fontSize: 16, fontWeight: 700, color: c.textHi, marginBottom: 8, letterSpacing: -0.3 }}>{s.title}</h3>
+            <p style={{ fontSize: 13, color: c.textMid, lineHeight: 1.65 }}>{s.desc}</p>
             <div className="flex flex-wrap gap-1.5 mt-4">
               {s.tags.map((t) => (
                 <span key={t} style={{ fontSize: 10, fontWeight: 600, padding: "3px 9px", borderRadius: 100, letterSpacing: "0.06em", textTransform: "uppercase", color: s.tagColor, background: s.tagBg }}>
