@@ -5,6 +5,8 @@ import { logoutUser } from "../services/authService";
 import SectionUsuarios from "../components/dashboard/SectionUsuarios";
 import SectionPerfil from "../components/dashboard/SectionPerfil";
 import SectionProyectosPersonales from "../components/dashboard/SectionProyectosPersonales";
+import SectionHabilidades from "../components/dashboard/SectionHabilidades";
+import SectionCertificados from "../components/dashboard/SectionCertificados";
 
 // ── TIPOS ─────────────────────────────────────────────────────────────────────
 
@@ -241,10 +243,10 @@ function renderSection(section: Section, isFounder: boolean, displayName: string
       return <SectionProyectosPersonales />;
 
     case "certificados":
-      return <Placeholder title="Certificados" description="Agrega tus certificaciones profesionales: nombre, institución, fecha y enlace de verificación." buttonLabel="Mis certificados" color="#eab308" />;
+      return <SectionCertificados />;
 
     case "habilidades":
-      return <Placeholder title="Habilidades técnicas" description="Muestra tu stack tecnológico: React, Node.js, Express, Java, Python y cualquier tecnología que domines." buttonLabel="Mis habilidades" color="#a78bfa" />;
+      return <SectionHabilidades />;
 
     default:
       return null;
